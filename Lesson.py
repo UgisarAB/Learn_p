@@ -33,6 +33,7 @@ for i in range(len(D)):
 dataset = D
 
 
+
 train = dataset[:36]
 test = dataset[36:]
 
