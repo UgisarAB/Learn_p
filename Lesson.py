@@ -14,6 +14,7 @@ def get_all_elements_in_list(lst):
     return count
 
 
+
 train_path = "dataset"  # каталог  с классами
 class_names = os.listdir(train_path)  # Имена классов по названию папок
 
