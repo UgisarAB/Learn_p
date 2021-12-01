@@ -30,7 +30,7 @@ for i in range(len(D)):
         D[i].append((image_paths[i][j], class_names[i]))
 
 # Разбиение списка на тренировочную и тестовую выборки
-dataset = []
+dataset = D
 
 train = dataset[:36]
 test = dataset[36:]
