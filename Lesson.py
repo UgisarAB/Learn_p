@@ -32,6 +32,7 @@ for i in range(len(D)):
 # Разбиение списка на тренировочную и тестовую выборки
 dataset = D
 
+
 train = dataset[:36]
 test = dataset[36:]
 
