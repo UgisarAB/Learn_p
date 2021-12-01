@@ -41,6 +41,7 @@ test = dataset[36:]
 print(image_paths)
 print()
 print(D)
+print(D)
 
 
 
