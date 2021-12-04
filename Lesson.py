@@ -40,7 +40,6 @@ def resizing_img(img, new_width=628, new_height=628, interp=cv.INTER_AREA):
     res_img = cv.resize(img, dimension, interpolation=interp)
     return res_img
 
-
 train_path = "dataset"  # каталог  с классами
 class_names = os.listdir(train_path)  # Имена классов по названию папок
 
