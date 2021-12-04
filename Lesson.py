@@ -98,6 +98,19 @@ descriptors = des_list[0][1]
 for image_path, descriptor in des_list[1:]:
     descriptors = np.vstack((descriptors, descriptor))
 
+# Выполнение кластеризации K-средних по дескрипторам
+descriptors_float = descriptors.astype(float)
+k = 200
+voc, variance = kmeans(descriptors_float, k, 1)
+
+# Создание гистограммы обучающего изображения
+im_features = np.zeros((len(image_paths), k), "float32")
+
+for i in range(len(image_paths)):
+    words, distance = vq(des_list[i][1], voc)
+    for w in words:
+        im_features[i][w] += 1
+
 
 print(Dataset)
 print(get_all_elements_in_list(Dataset))
