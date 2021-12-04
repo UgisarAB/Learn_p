@@ -2,6 +2,11 @@ import cv2 as cv
 import numpy as np
 import os
 import matplotlib.pyplot as plt
+from scipy.cluster.vq import kmeans, vq
+from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.svm import LinearSVC
+from sklearn.preprocessing import StandardScaler
+
 
 # Функция для перечисления всех имен файлов в каталоге
 def img_list(path):
@@ -39,6 +44,7 @@ def resizing_img(img, new_width=628, new_height=628, interp=cv.INTER_AREA):
 
     res_img = cv.resize(img, dimension, interpolation=interp)
     return res_img
+
 
 train_path = "dataset"  # каталог  с классами
 class_names = os.listdir(train_path)  # Имена классов по названию папок
