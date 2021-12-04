@@ -1,6 +1,7 @@
 import cv2 as cv
 import numpy as np
 import os
+import pylab as pl
 import matplotlib.pyplot as plt
 from scipy.cluster.vq import kmeans, vq
 from sklearn.metrics import confusion_matrix, accuracy_score
@@ -72,20 +73,32 @@ image_paths_test, y_test = zip(*test)
 
 print(image_paths)
 # Извлечение объектов с помощью ORB
-orb = cv.ORB_create()
-im = cv.imread(image_paths[20])
-im = resizing_img(im)
+# im = cv.imread(image_paths[1])
+# im = resizing_img(im)
+# orb = cv.ORB_create()
+# # Построение ключевых точек
+# kp = orb.detect(im, None)
+# kp, des = orb.compute(im, kp)
+# img = draw_keypoints(im, kp)
+# plt.show()
 
-# Построение ключевых точек
-kp = orb.detect(im, None)
-kp, des = orb.compute(im, kp)
-img = draw_keypoints(im, kp)
-plt.show()
+# Добавление дескрипторов обучающих изображений в список
+orb = cv.ORB_create()
+
+for image_pat in image_paths:
+    im = cv.imread(image_pat)
+
+    im = resizing_img(im)
+    kp = orb.detect(im, None)
+    keypoints, descriptor = orb.compute(im, kp)
+    des_list.append((image_pat, descriptor))
+
+descriptors = des_list[0][1]
+
+for image_path, descriptor in des_list[1:]:
+    descriptors = np.vstack((descriptors, descriptor))
 
 
 print(Dataset)
 print(get_all_elements_in_list(Dataset))
 print(len(train))
-print(len(test))
-
-cv.waitKey(0)
