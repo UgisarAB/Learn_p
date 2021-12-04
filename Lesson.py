@@ -3,7 +3,6 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
-
 # Функция для перечисления всех имен файлов в каталоге
 def img_list(path):
     return (os.path.join(path, f) for f in os.listdir(path))
