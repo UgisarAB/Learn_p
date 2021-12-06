@@ -111,6 +111,13 @@ for i in range(len(image_paths)):
     for w in words:
         im_features[i][w] += 1
 
+# Применение стандартизации в функции обучения
+stdslr = StandardScaler().fit(im_features)
+im_features = stdslr.transform(im_features)
+
+# Создание модели классификации с помощью SVM
+clf = LinearSVC(max_iter=80000)
+clf.fit(im_features, np.array(y_train))
 
 print(Dataset)
 print(get_all_elements_in_list(Dataset))
