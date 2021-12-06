@@ -31,17 +31,11 @@ def draw_keypoints(vis, keypoints, color=(0, 255, 255)):
 
 
 # Функция для масштабирования изображения
-def resizing_img(img, new_width=628, new_height=628, interp=cv.INTER_AREA):
+def resizing_img(img, new_width=500, interp=cv.INTER_AREA):
     h, w = img.shape[:2]
 
-    if new_width is None and new_height is None:
-        return img
-    if new_width is None:
-        ratio = new_height / h
-        dimension = (int(w * ratio), new_height)
-    else:
-        ratio = new_width / w
-        dimension = (new_width, int(h * ratio))
+    ratio = new_width / w
+    dimension = (new_width, int(h * ratio))
 
     res_img = cv.resize(img, dimension, interpolation=interp)
     return res_img
@@ -93,6 +87,10 @@ for image_pat in image_paths:
     keypoints, descriptor = orb.compute(im, kp)
     des_list.append((image_pat, descriptor))
 
+im = cv.imread(image_paths[4])
+im = resizing_img(im)
+cv.imshow('test',im)
+
 descriptors = des_list[0][1]
 
 for image_path, descriptor in des_list[1:]:
@@ -119,6 +117,28 @@ im_features = stdslr.transform(im_features)
 clf = LinearSVC(max_iter=80000)
 clf.fit(im_features, np.array(y_train))
 
+# Тестирование модели классификации
+des_list_test = []
+
+for image_pat in image_paths_test:
+    image = cv.imread(image_pat)
+    im = resizing_img(image)
+    kp = orb.detect(image, None)
+    keypoints_test, descriptor_test = orb.compute(image, kp)
+    des_list_test.append((image_pat, descriptor_test))
+
+test_features = np.zeros((len(image_paths_test), k), "float32")
+
+for i in range(len(image_paths_test)):
+    words, distance = vq(des_list_test[i][1], voc)
+    for w in words:
+        test_features[i][w] += 1
+
+test_features = stdslr.transform(test_features)
+
+
 print(Dataset)
 print(get_all_elements_in_list(Dataset))
 print(len(train))
+
+cv.waitKey()
