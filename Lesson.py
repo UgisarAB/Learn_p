@@ -136,6 +136,25 @@ for i in range(len(image_paths_test)):
 
 test_features = stdslr.transform(test_features)
 
+true_classes = []
+for i in y_test:
+    if i == 'Deer':
+        true_classes.append("Олень")
+    elif i == 'Penguin':
+        true_classes.append("Пингвин")
+    else:
+        true_classes.append("Пикачу")
+
+predict_classes = []
+
+for i in clf.predict(test_features):
+    if i == 'Deer':
+        predict_classes.append("Олень")
+    elif i == 'Penguin':
+        predict_classes.append("Пингвин")
+    else:
+        predict_classes.append("Пикачу")
+
 
 print(Dataset)
 print(get_all_elements_in_list(Dataset))
