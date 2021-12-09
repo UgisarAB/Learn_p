@@ -7,6 +7,7 @@ from scipy.cluster.vq import kmeans, vq
 from sklearn.metrics import confusion_matrix, accuracy_score
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
+import unittest
 
 
 # Функция для перечисления всех имен файлов в каталоге
@@ -65,7 +66,7 @@ for i in range(len(Dataset)):
 image_paths, y_train = zip(*train)
 image_paths_test, y_test = zip(*test)
 
-print(image_paths)
+# print(image_paths)
 # Извлечение объектов с помощью ORB
 # im = cv.imread(image_paths[1])
 # im = resizing_img(im)
@@ -87,9 +88,9 @@ for image_pat in image_paths:
     keypoints, descriptor = orb.compute(im, kp)
     des_list.append((image_pat, descriptor))
 
-im = cv.imread(image_paths[4])
-im = resizing_img(im)
-cv.imshow('test',im)
+# im = cv.imread(image_paths[4])
+# im = resizing_img(im)
+# cv.imshow('test',im)
 
 descriptors = des_list[0][1]
 
@@ -155,9 +156,20 @@ for i in clf.predict(test_features):
     else:
         predict_classes.append("Пикачу")
 
+print(true_classes)
+print(predict_classes)
 
-print(Dataset)
-print(get_all_elements_in_list(Dataset))
-print(len(train))
+
+class trueClassesTest(unittest.TestCase):
+
+    def test_even(self):
+        for i in range(len(true_classes)):
+            with self.subTest(i=i):
+                self.assertEqual(true_classes[i], predict_classes[i])
+
+
+# print(Dataset)
+# print(get_all_elements_in_list(Dataset))
+# print(len(train))
 
 cv.waitKey()
