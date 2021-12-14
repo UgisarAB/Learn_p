@@ -66,7 +66,6 @@ for i in range(len(Dataset)):
 image_paths, y_train = zip(*train)
 image_paths_test, y_test = zip(*test)
 
-# print(image_paths)
 # Извлечение объектов с помощью ORB
 # im = cv.imread(image_paths[1])
 # im = resizing_img(im)
@@ -88,9 +87,6 @@ for image_pat in image_paths:
     keypoints, descriptor = orb.compute(im, kp)
     des_list.append((image_pat, descriptor))
 
-# im = cv.imread(image_paths[4])
-# im = resizing_img(im)
-# cv.imshow('test',im)
 
 descriptors = des_list[0][1]
 
@@ -99,7 +95,7 @@ for image_path, descriptor in des_list[1:]:
 
 # Выполнение кластеризации K-средних по дескрипторам
 descriptors_float = descriptors.astype(float)
-k = 200
+k = 100
 voc, variance = kmeans(descriptors_float, k, 1)
 
 # Создание гистограммы обучающего изображения
@@ -140,25 +136,23 @@ test_features = stdslr.transform(test_features)
 true_classes = []
 for i in y_test:
     if i == 'Deer':
-        true_classes.append("Олень")
+        true_classes.append("Deer")
     elif i == 'Penguin':
-        true_classes.append("Пингвин")
+        true_classes.append("Penguin")
     else:
-        true_classes.append("Пикачу")
+        true_classes.append("Pica")
 
 predict_classes = []
 
 for i in clf.predict(test_features):
     if i == 'Deer':
-        predict_classes.append("Олень")
+        predict_classes.append("Deer")
     elif i == 'Penguin':
-        predict_classes.append("Пингвин")
+        predict_classes.append("Penguin")
     else:
-        predict_classes.append("Пикачу")
+        predict_classes.append("Pica")
 
-print(true_classes)
-print(predict_classes)
-
+accuracy=accuracy_score(true_classes,predict_classes)
 
 class trueClassesTest(unittest.TestCase):
 
@@ -167,9 +161,20 @@ class trueClassesTest(unittest.TestCase):
             with self.subTest(i=i):
                 self.assertEqual(true_classes[i], predict_classes[i])
 
+# output test
+f = open("Report.txt", "w")
+for i in range(len(true_classes)):
+    if true_classes[i] != predict_classes[i]:
+        f.write("ERROR----------------------------------\n")
+        f.write(f'Expected: {true_classes[i]}, Result: {predict_classes[i]}\n')
+f.write(f'Accuracy: {accuracy}')
+f.close()
 
+print(true_classes)
+print(predict_classes)
+print(accuracy)
 # print(Dataset)
 # print(get_all_elements_in_list(Dataset))
 # print(len(train))
 
-cv.waitKey()
+# cv.waitKey()

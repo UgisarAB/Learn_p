@@ -1,0 +1,3 @@
+ERROR----------------------------------
+Expected: Pica, result: Penguin
+Accuracy: 0.8888888888888888
