@@ -53,19 +53,22 @@ for i in range(len(class_names)):  # Путь до каждой отдельно
     class_path = img_list(dir_)
     image_paths[i].extend(class_path)
 
-    print(1)
-
-print(get_all_elements_in_list(image_paths))
 # Присваивание каждой картинке своего класса
 for i in range(len(Dataset)):
     for j in range(len(image_paths[0])):
         Dataset[i].append((image_paths[i][j], class_names[i]))
 
 # Разбиение списка на тренировочную и тестовую выборки
+percent_of_train_set = 0.8
+
+number_of_all_elements = get_all_elements_in_list(Dataset)
+number_of_all_elements = int((number_of_all_elements // len(class_names)) * percent_of_train_set)
+
+
 for i in range(len(Dataset)):
-    train.extend(Dataset[i][:12])
-    test.extend(Dataset[i][12:])
-print(Dataset)
+    train.extend(Dataset[i][:number_of_all_elements])
+    test.extend(Dataset[i][number_of_all_elements:])
+
 image_paths, y_train = zip(*train)
 image_paths_test, y_test = zip(*test)
 print(image_paths, y_train, sep="\n")
@@ -120,11 +123,12 @@ clf.fit(im_features, np.array(y_train))
 des_list_test = []
 
 for image_pat in image_paths_test:
-    image = cv.imread(image_pat)
-    im = resizing_img(image)
-    kp = orb.detect(image, None)
-    keypoints_test, descriptor_test = orb.compute(image, kp)
+    im = cv.imread(image_pat)
+    im = resizing_img(im)
+    kp = orb.detect(im, None)
+    keypoints_test, descriptor_test = orb.compute(im, kp)
     des_list_test.append((image_pat, descriptor_test))
+    del im
 
 test_features = np.zeros((len(image_paths_test), k), "float32")
 
