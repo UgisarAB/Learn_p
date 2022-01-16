@@ -1,13 +1,11 @@
 import cv2 as cv
 import numpy as np
 import os
-import pylab as pl
 import matplotlib.pyplot as plt
 from scipy.cluster.vq import kmeans, vq
-from sklearn.metrics import confusion_matrix, accuracy_score
+from sklearn.metrics import accuracy_score
 from sklearn.svm import LinearSVC
 from sklearn.preprocessing import StandardScaler
-import unittest
 
 
 # Функция для перечисления всех имен файлов в каталоге
@@ -42,7 +40,9 @@ def resizing_img(img, new_width=500, interp=cv.INTER_AREA):
     return res_img
 
 
-train_path = "dataset"  # каталог  с классами
+# Начало программы
+
+train_path = "dataset"  # каталог с классами
 class_names = os.listdir(train_path)  # Имена классов по названию папок
 
 Dataset, image_paths = [[] for _ in range(len(class_names))], [[] for _ in range(len(class_names))]
@@ -53,6 +53,9 @@ for i in range(len(class_names)):  # Путь до каждой отдельно
     class_path = img_list(dir_)
     image_paths[i].extend(class_path)
 
+    print(1)
+
+print(get_all_elements_in_list(image_paths))
 # Присваивание каждой картинке своего класса
 for i in range(len(Dataset)):
     for j in range(len(image_paths[0])):
@@ -65,7 +68,7 @@ for i in range(len(Dataset)):
 
 image_paths, y_train = zip(*train)
 image_paths_test, y_test = zip(*test)
-
+print(image_paths, y_train, sep="\n")
 # Извлечение объектов с помощью ORB
 # im = cv.imread(image_paths[1])
 # im = resizing_img(im)
@@ -86,7 +89,6 @@ for image_pat in image_paths:
     kp = orb.detect(im, None)
     keypoints, descriptor = orb.compute(im, kp)
     des_list.append((image_pat, descriptor))
-
 
 descriptors = des_list[0][1]
 
@@ -132,7 +134,6 @@ for i in range(len(image_paths_test)):
         test_features[i][w] += 1
 
 test_features = stdslr.transform(test_features)
-
 true_classes = []
 for i in y_test:
     if i == 'Deer':
@@ -152,29 +153,35 @@ for i in clf.predict(test_features):
     else:
         predict_classes.append("Pica")
 
-accuracy=accuracy_score(true_classes,predict_classes)
-
-class trueClassesTest(unittest.TestCase):
-
-    def test_even(self):
-        for i in range(len(true_classes)):
-            with self.subTest(i=i):
-                self.assertEqual(true_classes[i], predict_classes[i])
+accuracy = accuracy_score(true_classes, predict_classes)
 
 # output test
 f = open("Report.txt", "w")
+
+f.write(
+    f'''Описание работы программы:
+{'-' * 110}
+Работа программы заключается в предсказании того, что находится на изображениях в тестовом наборе данных, 
+    состоящем из 9 изображений, по 3 изображения на каждый класс: {class_names}.
+На входе программе подаются 35 изображений, для составления словаря по ключевым точкам изображений.
+После, по этому словарю строится гистограмма, по которой строится модель классификации изображений.
+{'-' * 110}
+Работа программы:
+Тестовая выборка с названиями объектов, которые требуется предсказать:
+{true_classes} 
+
+Предсказанные моделью классы объектов:
+{predict_classes}\n''')
+
 for i in range(len(true_classes)):
     if true_classes[i] != predict_classes[i]:
-        f.write("ERROR----------------------------------\n")
-        f.write(f'Expected: {true_classes[i]}, Result: {predict_classes[i]}\n')
-f.write(f'Accuracy: {accuracy}')
+        f.write(
+            f'''Номер изображения в тестовом наборе: {i + 1}.
+Правильный ответ: {true_classes[i]}, Предсказанный ответ: {predict_classes[i]}\n\n''')
+
+f.write(f'Точность: {accuracy}')
 f.close()
 
 print(true_classes)
 print(predict_classes)
 print(accuracy)
-# print(Dataset)
-# print(get_all_elements_in_list(Dataset))
-# print(len(train))
-
-# cv.waitKey()
