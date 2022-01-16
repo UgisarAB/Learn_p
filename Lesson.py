@@ -65,7 +65,7 @@ for i in range(len(Dataset)):
 for i in range(len(Dataset)):
     train.extend(Dataset[i][:12])
     test.extend(Dataset[i][12:])
-
+print(Dataset)
 image_paths, y_train = zip(*train)
 image_paths_test, y_test = zip(*test)
 print(image_paths, y_train, sep="\n")
